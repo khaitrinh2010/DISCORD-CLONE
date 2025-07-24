@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  name      String
+  email     String    @db.Text
+  imageUrl  String    @db.Text
+  servers   Server[]
+  members   Member[]
+  channels  Channel[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("profiles")
+}
+
+model Server {
+  id         String @id @default(uuid())
+  name       String
+  imageUrl   String @db.Text
+  inviteCode String @unique
+
+  profileId String
+  // profileId is the foreign key to the Profile model, id is the primary key of the Profile model
+  profile   Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  members   Member[]
+  channels  Channel[]
+
+  @@index([profileId]) // creates a database index on profileId for faster lookups
+  @@map("servers") //
+}
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+model Member {
+  id   String     @id @default(uuid())
+  role MemberRole @default(GUEST)
+
+  profileId String
+  serverId  String
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  server    Server?  @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId]) // creates a database index on profileId for faster lookups
+  @@index([serverId]) // creates a database index on serverId for faster lookups
+  @@map("members")
+}
+
+enum ChannelType {
+  TEXT
+  AUDIO
+  VIDEO
+}
+
+model Channel {
+  id   String      @id @default(uuid())
+  name String
+  type ChannelType @default(TEXT)
+
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  serverId  String
+  server    Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId]) // creates a database index on profileId for faster lookups
+  @@index([serverId]) // creates a database index on serverId for faster lookups
+  @@map("channels")
+}
