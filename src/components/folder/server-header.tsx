@@ -12,6 +12,7 @@ import {
 import {useModal} from "../../../hooks/use-modal-store";
 import {ChevronDown, LogOut, PlusCircle, Settings, Trash, UserPlus, Users} from "lucide-react";
 
+
 interface ServerHeaderProps {
     server: ServerWithMembersWithProfiles
     role?: MemberRole
@@ -30,6 +31,7 @@ export const ServerHeader = ({server, role}: ServerHeaderProps) => {
                     hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
                 >
                     {server.name}
+                    <ChevronDown className="h-5 w-5 ml-auto" />
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 text-xs font-medium text-black dark:text-neutral-400 space-y-[2px]">
@@ -64,13 +66,13 @@ export const ServerHeader = ({server, role}: ServerHeaderProps) => {
                     <DropdownMenuSeparator />
                 )}
                 {isAdmin && (
-                    <DropdownMenuItem className="text-rose-500 px-2 py-2 text-sm cursor-pointer">
+                    <DropdownMenuItem className="text-rose-500 px-2 py-2 text-sm cursor-pointer" onClick={() => onOpen("deleteServer", { server })}>
                         Delete Server
                         <Trash className="ml-auto h-4 w-4" />
                     </DropdownMenuItem>
                 )}
                 {!isAdmin && (
-                    <DropdownMenuItem className="text-rose-500 px-2 py-2 text-sm cursor-pointer">
+                    <DropdownMenuItem className="text-rose-500 px-2 py-2 text-sm cursor-pointer" onClick={() => onOpen("leaveServer", { server })}>
                         Leave Server
                         <LogOut className="ml-auto h-4 w-4" />
                     </DropdownMenuItem>
