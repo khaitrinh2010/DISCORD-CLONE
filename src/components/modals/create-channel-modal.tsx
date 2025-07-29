@@ -28,6 +28,7 @@ import { useModal } from "../../../hooks/use-modal-store";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {ChannelType} from "@prisma/client";
 import qs from "query-string";
+import {useEffect} from "react";
 
 const formSchema = z.object({
     name: z.string().min(1, { message: "Server name is required" }).refine(name => name !== "general", {message: "Channel name cannot be 'general'"}),
@@ -37,17 +38,29 @@ const formSchema = z.object({
 export const CreateChannelModal = () => {
     const router = useRouter();
     const params = useParams()
-    const { type, isOpen, onClose } = useModal();
+    const { type, isOpen, onClose, data } = useModal();
 
     const isModalOpen = isOpen && type === "createChannel";
 
+    const {channelType} = data;
+    console.log("Channel Type:", channelType);
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
-            type: ChannelType.TEXT, // Default to TEXT channel type
+            type: channelType || ChannelType.TEXT, // Default to TEXT channel type
         },
     });
+
+    useEffect(
+        () => {
+            if (channelType) {
+                form.setValue("type", channelType);
+            }
+            else{
+                form.setValue("type", ChannelType.TEXT); // Default to TEXT if no channelType is provided
+            }
+        }, [channelType, form])
 
     const isLoading = form.formState.isSubmitting;
 
@@ -123,7 +136,7 @@ export const CreateChannelModal = () => {
                                         <Select
                                             disabled={isLoading}
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                             <FormControl>
                                                 <SelectTrigger

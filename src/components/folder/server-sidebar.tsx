@@ -10,6 +10,7 @@ import ServerSearch from "@/components/folder/server-search";
 import {Separator} from "@/components/ui/separator";
 import ServerSection from "@/components/folder/server-section";
 import {ServerChannel} from "@/components/folder/server-channel";
+import ServerMember from "@/components/folder/server-member";
 
 interface ServerSidebarProps {
     serverId: string;
@@ -60,6 +61,7 @@ export const ServerSidebar = async ({serverId}: ServerSidebarProps) => {
     const members = server?.members.filter(member => member.profileId !== profile.id) || [];
 
     const role = server.members.find(member => member.profileId === profile.id)?.role;
+    console.log("Number of members:", members.length);
 
     return (
         <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
@@ -113,6 +115,30 @@ export const ServerSidebar = async ({serverId}: ServerSidebarProps) => {
                         <ServerSection label="Text Channel" server={server} role={role} sectionType="channels" channelType={ChannelType.TEXT}/>
                         {textChannels.map(channel => (
                             <ServerChannel key={channel.id} channel={channel} server={server} role={role} />
+                        ))}
+                    </div>
+                )}
+                {!!audioChannels?.length && (
+                    <div className="mb-2">
+                        <ServerSection label="Voice Channel" server={server} role={role} sectionType="channels" channelType={ChannelType.AUDIO}/>
+                        {audioChannels.map(channel => (
+                            <ServerChannel key={channel.id} channel={channel} server={server} role={role} />
+                        ))}
+                    </div>
+                )}
+                {!!videoChannels?.length && (
+                    <div className="mb-2">
+                        <ServerSection label="Video Channel" server={server} role={role} sectionType="channels" channelType={ChannelType.VIDEO}/>
+                        {videoChannels.map(channel => (
+                            <ServerChannel key={channel.id} channel={channel} server={server} role={role} />
+                        ))}
+                    </div>
+                )}
+                {!!members?.length && (
+                    <div className="mb-2">
+                        <ServerSection label="Members" server={server} role={role} sectionType="members"/>
+                        {members.map(member => (
+                            <ServerMember key={member.id} member={member} server={server} />
                         ))}
                     </div>
                 )}
