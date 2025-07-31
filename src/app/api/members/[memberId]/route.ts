@@ -15,7 +15,7 @@ export async function DELETE(req : NextRequest, { params } : { params : {memberI
             return new Response("Bad Request: Missing serverId", {status: 400});
         }
         if (!params.memberId) {
-            return new Response("Bad Request: Missing memberId", {status: 400});
+            return new Response("Bad Request: Missing [memberId]", {status: 400});
         }
         const server = await db.server.update({
             where: {
@@ -65,7 +65,7 @@ export async function PATCH(req : NextRequest, { params } : { params : {memberId
             return new Response("Bad Request: Missing serverId", { status: 400 });
         }
         if(!params.memberId){
-            return new Response("Bad Request: Missing memberId", { status: 400 });
+            return new Response("Bad Request: Missing [memberId]", { status: 400 });
         }
         const server = await db.server.update({
             where : {

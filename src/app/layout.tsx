@@ -6,6 +6,7 @@ import {ThemeProvider} from "@/components/providers/theme-provider";
 import {cn} from "@/lib/utils";
 import {ModalProvider} from "@/components/providers/modal-provider";
 import {CreateServerModal} from "@/components/modals/create-server-modal";
+import {SocketProvider} from "@/components/providers/socker-provider";
 
 // Define font variables for Tailwind
 const openSans = Open_Sans({
@@ -40,8 +41,10 @@ export default function RootLayout({
                     enableSystem={false}
                     storageKey="discord-theme"
                 >
-                    <ModalProvider />
-                    {children}
+                    <SocketProvider>
+                        <ModalProvider />
+                        {children}
+                    </SocketProvider>
                 </ThemeProvider>
 
                 </body>
