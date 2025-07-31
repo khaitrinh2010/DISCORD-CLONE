@@ -5,6 +5,8 @@ import cors from "cors";
 
 const app = express();
 const httpServer = createServer(app);
+app.use(express.json());
+
 
 const io = new Server(httpServer, {
     path: "/api/socket/io",
@@ -25,6 +27,20 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("❌ Client disconnected:", socket.id);
     });
+});
+
+app.post("/api/emit", (req, res) => {
+    console.log("Requestt: ", req.body)
+    const { event, data } = req.body;
+
+    if (!event || !data) {
+        return res.status(400).json({ error: "Missing event or data" });
+    }
+
+    console.log(`📢 Broadcasting ${event}:`, data);
+    io.emit(event, data); // Or io.to(data.channelId).emit(event, data)
+
+    res.json({ success: true });
 });
 
 const PORT = process.env.PORT || 3001;
