@@ -2,15 +2,19 @@ import {NavigationSidebar} from "@/components/navigation/navigation-sidebar";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
     return (
-        <div className="h-full">
-            <div className="md:flex h-full w-[72px] z-30 flex-col fixed inset-y-0 bg-gray-900">
-                <NavigationSidebar/>
+        <div className="h-screen flex">
+            {/* Server Sidebar */}
+            <div className="w-[72px] bg-gray-900 flex-shrink-0">
+                <NavigationSidebar />
             </div>
-            <main className="md:pl-[72px] h-full">
+
+            {/* Main area */}
+            <div className="flex-1 flex flex-col">
                 {children}
-            </main>
+            </div>
         </div>
-    )
-}
+    );
+};
+
 export default MainLayout;
 
