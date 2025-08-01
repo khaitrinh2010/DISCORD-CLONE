@@ -7,6 +7,7 @@ import {cn} from "@/lib/utils";
 import {ModalProvider} from "@/components/providers/modal-provider";
 import {CreateServerModal} from "@/components/modals/create-server-modal";
 import {SocketProvider} from "@/components/providers/socker-provider";
+import {QueryProvider} from "@/components/providers/query-provider";
 
 // Define font variables for Tailwind
 const openSans = Open_Sans({
@@ -43,7 +44,9 @@ export default function RootLayout({
                 >
                     <SocketProvider>
                         <ModalProvider />
-                        {children}
+                        <QueryProvider>
+                            {children}
+                        </QueryProvider>
                     </SocketProvider>
                 </ThemeProvider>
 

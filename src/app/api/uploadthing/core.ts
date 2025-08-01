@@ -22,5 +22,20 @@ export const ourFileRouter = {
             console.log("file url", file.url);
             return { uploadedBy: metadata.userId };
         }),
+    messageFile: f(["image", "video", "audio", "pdf"])
+        .middleware(async ({ req }) => {
+            // This code runs on your server before upload
+            const user = await auth();
+            if (!user) throw new Error("Unauthorized");
+            console.log(user)
+            return { userId: user.userId };
+        })
+        .onUploadComplete(async ({ metadata, file }) => {
+            // This code RUNS ON YOUR SERVER after upload
+            console.log("Upload complete for userId:", metadata.userId);
+            console.log("file url", file.url);
+            return { uploadedBy: metadata.userId };
+        })
+
 } satisfies FileRouter;
 export type OurFileRouter = typeof ourFileRouter;

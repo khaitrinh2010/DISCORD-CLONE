@@ -36,10 +36,7 @@ app.post("/api/emit", (req, res) => {
     if (!event || !data) {
         return res.status(400).json({ error: "Missing event or data" });
     }
-
-    console.log(`📢 Broadcasting ${event}:`, data);
     io.emit(event, data); // Or io.to(data.channelId).emit(event, data)
-
     res.json({ success: true });
 });
 
