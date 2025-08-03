@@ -8,12 +8,13 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const profile = await currentProfile();
-        const { content, fileUrl } = body;
+        const { content, fileUrl, fileType } = body;
         const channelId = req.nextUrl.searchParams.get("channelId");
         const serverId = req.nextUrl.searchParams.get("serverId");
         if (!content || !channelId || !serverId) {
             return NextResponse.json({ error: "Missing fields" }, { status: 400 });
         }
+        console.log("File type is ", fileType);
 
         const server = await db.server.findFirst({
             where: {
@@ -52,6 +53,7 @@ export async function POST(req: NextRequest) {
 
         const message = await db.message.create({
             data : {
+                fileType,
                 content,
                 fileUrl,
                 channelId,

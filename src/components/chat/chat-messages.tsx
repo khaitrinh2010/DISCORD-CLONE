@@ -4,6 +4,10 @@ import {ChatWelcome} from "@/components/chat/chat-welcome";
 import {useChatQuery} from "../../../hooks/use-chat-query";
 import {Loader2, ServerCrash} from "lucide-react";
 import {Fragment} from "react";
+import {ChatItem} from "@/components/chat/chat-item";
+import {format} from "date-fns";
+
+const DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
 
 type MessageWithMemberWithProfile = Message & {member : Member &  {profile: Profile}}
 
@@ -28,6 +32,7 @@ export const ChatMessages = ({name, member, chatId, apiUrl, socketUrl, socketQue
             paramValue,
         }
     );
+    console.log("data ", data);
     if (status === "loading") {
         return (
             <div className="flex flex-col flex-1 justify-center items-center">
@@ -56,9 +61,20 @@ export const ChatMessages = ({name, member, chatId, apiUrl, socketUrl, socketQue
                 {data?.pages?.map((group, i) => (
                     <Fragment key={i}>
                         {group.items.map((message: MessageWithMemberWithProfile) => (
-                            <div key={message.id}>
-                                {message.content}
-                            </div>
+                            <ChatItem
+                                key={message.id}
+                                id={message.id}
+                                currentMember={member}
+                                content={message.content}
+                                fileUrl={message.fileUrl}
+                                deleted={message.deleted}
+                                timestamp={ format(new Date(message.createdAt), DATE_FORMAT)}
+                                isUpdated={message.updatedAt !== message.createdAt}
+                                socketUrl={socketUrl}
+                                socketQuery={socketQuery}
+                                member={message.member}
+                                fileType={message.fileType}
+                            />
                         ))}
                     </Fragment>
                 ))}

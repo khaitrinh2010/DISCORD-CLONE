@@ -6,20 +6,18 @@ export async function GET(req: NextRequest){
     try {
         const { searchParams } = req.nextUrl;
         const channelId = searchParams.get("channelId");
-        const cursor = searchParams.get("cursor") || "0";
-
-        console.log("Fetching messages for channelId:", channelId, "with cursor:", cursor);
-
+        const cursor = searchParams.get("cursor");
         if (!channelId) {
             return new Response("Channel ID is required", { status: 400 });
         }
         let messages: Message[] = []
         if (cursor) {
             messages = await db.message.findMany({
-                take: MESSAGES_BATCH,
-                cursor: {
-                    id: cursor,
-                },
+                // take: MESSAGES_BATCH,
+                // skip: 1, // Skip the cursor message
+                // cursor: {
+                //     id: cursor,
+                // },
                 where: {
                     channelId,
                 },
@@ -58,7 +56,6 @@ export async function GET(req: NextRequest){
         if (messages.length === MESSAGES_BATCH) {
             nextCursor = messages[messages.length - 1].id;
         }
-        console.log("All messages: ", messages)
         return new Response(JSON.stringify({
             items: messages,
             nextCursor,

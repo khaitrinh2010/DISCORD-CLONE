@@ -11,11 +11,12 @@ interface FileUploadProps {
     value?: string;
     endpoint: "messageFile" | "serverImage";
     name?: string;
+    setFileType?: (type: string) => void;
 }
-export const FileUpload = ({ onChange, value, endpoint, name }: FileUploadProps) => {
-    const [fileType, setFileType] = useState<string | null>(null);
+export const FileUpload = ({ onChange, value, endpoint, name, setFileType }: FileUploadProps) => {
+    const [fileTy, setFileTy] = useState<string | null>(null);
 
-    if(value && fileType !== "pdf"){
+    if(value && fileTy !== "pdf"){
         return (
             <div className="relative h-20 w-20">
                 <Image
@@ -31,7 +32,7 @@ export const FileUpload = ({ onChange, value, endpoint, name }: FileUploadProps)
 
         );
     }
-    else if(value && fileType === "pdf") {
+    else if(value && fileTy === "pdf") {
         return (
             <div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
                 <FileIcon className="w-10 h-10 fill-indigo-200 stroke-indigo-400"/>
@@ -58,8 +59,11 @@ export const FileUpload = ({ onChange, value, endpoint, name }: FileUploadProps)
                 const file = res?.[0];
                 if (!file) return;
                 const ext = file.name.split(".").pop()?.toLowerCase() ?? "unknown";
-                setFileType(ext); // store type locally for display
-                onChange?.(file.url); // only send the clean URL
+                setFileTy(ext); // store type locally for display
+                if (setFileType) {
+                    setFileType(ext);
+                }
+                onChange?.(file.url);
             }}
         />
     );

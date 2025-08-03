@@ -26,6 +26,7 @@ import { FileUpload } from "@/components/file-upload";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useModal } from "../../../hooks/use-modal-store";
+import {useState} from "react";
 
 const formSchema = z.object({
     fileUrl: z.string({ message: "Attachment is required" }),
@@ -43,6 +44,8 @@ export const MessageFileModal = () => {
         },
     });
 
+    const [fileType, setFileType] = useState<string | null>(null);
+
     const isLoading = form.formState.isSubmitting;
 
     const handleClose = () => {
@@ -56,8 +59,10 @@ export const MessageFileModal = () => {
                 url: apiUrl,
                 query,
             })
+            console.log("Filt type is ", fileType);
             await axios.post(url, {
                 ...values,
+                fileType,
                 content: values.fileUrl,
             });
             form.reset();
@@ -100,6 +105,7 @@ export const MessageFileModal = () => {
                                                 value={field.value}
                                                 onChange={field.onChange}
                                                 name="fileUrl"
+                                                setFileType={setFileType}
                                             />
                                         </FormControl>
                                         <FormMessage />
